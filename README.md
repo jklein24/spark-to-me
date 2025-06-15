@@ -1,6 +1,6 @@
-# UMA Demo Server with Spark
+# Sparkto.me
 
-An example UMA VASP server implementation using Typescript.
+An UMA/lnurl-pay server that can route payments to any Spark address. See [sparkto.me](https://sparkto.me) for the live site.
 
 ## Running the server
 
@@ -125,6 +125,7 @@ For convenience, you can use the included `get-invoice.sh` script to fetch invoi
 ```
 
 For example:
+
 ```bash
 # Using default host (localhost:8080)
 ./get-invoice.sh sprt1pgss8hjca7z32zkc795d2umcfneknxs7qruvn30ka3d3arzpqfva9vweqx0uhm 1000
