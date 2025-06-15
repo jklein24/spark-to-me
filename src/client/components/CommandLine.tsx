@@ -24,8 +24,13 @@ export function CommandLine({
   return (
     <div className="mb-8">
       <div className="relative">
-        <pre className="p-4 bg-gray-800 rounded-lg overflow-x-auto h-[600px] font-mono text-sm">
-          <div className="text-gray-400">$ curl -X GET "{protocol}://{host}/.well-known/lnurlp/{sparkAddress}"</div>
+        {!lnurlResponse && !loading && (
+          <div className="text-gray-400 h-16 flex flex-col items-center justify-center text-center px-4 mb-4">
+            <p>Enter a Spark address and amount to get an invoice</p>
+          </div>
+        )}
+        <pre className="p-3 sm:p-4 bg-gray-800 rounded-lg overflow-x-auto h-[400px] sm:h-[600px] font-mono text-xs sm:text-sm whitespace-pre-wrap break-all">
+          <div className="text-gray-400">$ curl -X GET "{protocol}://{host}/.well-known/lnurlp/{sparkAddress || 'your_spark_address'}"</div>
           {loading ? (
             <div className="flex items-center justify-center h-32">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -50,11 +55,7 @@ export function CommandLine({
                 </div>
               )}
             </>
-          ) : (
-            <div className="text-gray-500 h-32 flex items-center justify-center">
-              Waiting for LNURL response...
-            </div>
-          )}
+          ) : null}
         </pre>
       </div>
       {callbackResponse?.pr && (

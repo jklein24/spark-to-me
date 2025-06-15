@@ -1,59 +1,54 @@
+import { useState } from 'react';
+
 interface InvoiceFormProps {
-  sparkAddress: string;
-  amount: string;
-  loading: boolean;
-  callbackLoading: boolean;
-  onSparkAddressChange: (value: string) => void;
-  onAmountChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (address: string, amount: string) => Promise<void>;
 }
 
-export function InvoiceForm({
-  sparkAddress,
-  amount,
-  loading,
-  callbackLoading,
-  onSparkAddressChange,
-  onAmountChange,
-  onSubmit,
-}: InvoiceFormProps) {
+export function InvoiceForm({ onSubmit }: InvoiceFormProps) {
+  const [sparkAddress, setSparkAddress] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await onSubmit(sparkAddress, amount);
+  };
+
   return (
-    <form onSubmit={onSubmit} className="mb-8">
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="sparkAddress" className="block text-sm font-medium text-gray-300 mb-1">
-            Spark Address
-          </label>
-          <input
-            id="sparkAddress"
-            type="text"
-            value={sparkAddress}
-            onChange={(e) => onSparkAddressChange(e.target.value)}
-            placeholder="Enter your Spark address"
-            className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-primary focus:outline-none"
-          />
-        </div>
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-300 mb-1">
-            Amount (sats)
-          </label>
-          <input
-            id="amount"
-            type="number"
-            value={amount}
-            onChange={(e) => onAmountChange(e.target.value)}
-            placeholder="Enter amount in sats"
-            className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-primary focus:outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading || callbackLoading}
-          className="w-full px-6 py-3 bg-primary hover:bg-primary-dark rounded-lg font-medium transition-colors disabled:opacity-50"
-        >
-          {loading || callbackLoading ? 'Loading...' : 'Get Invoice'}
-        </button>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="sparkAddress" className="block text-sm font-medium text-gray-300 mb-2">
+          Spark Address
+        </label>
+        <input
+          type="text"
+          id="sparkAddress"
+          value={sparkAddress}
+          onChange={(e) => setSparkAddress(e.target.value)}
+          placeholder="sp1..."
+          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          required
+        />
       </div>
+      <div>
+        <label htmlFor="amount" className="block text-sm font-medium text-gray-300 mb-2">
+          Amount (sats)
+        </label>
+        <input
+          type="number"
+          id="amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="amount in sats"
+          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors duration-200"
+      >
+        Fetch Invoice
+      </button>
     </form>
   );
 } 

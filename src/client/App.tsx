@@ -6,104 +6,76 @@ import { HowItWorks } from './components/HowItWorks';
 import { Header } from './components/Header';
 
 function App() {
-  const [sparkAddress, setSparkAddress] = useState('sprt1pgss8hjca7z32zkc795d2umcfneknxs7qruvn30ka3d3arzpqfva9vweqx0uhm');
-  const [amount, setAmount] = useState('10');
-  const [lnurlResponse, setLnurlResponse] = useState<LNURLResponse | null>(null);
-  const [callbackResponse, setCallbackResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [callbackLoading, setCallbackLoading] = useState(false);
-  const [showResponses, setShowResponses] = useState(false);
+  const [lnurlResponse, setLnurlResponse] = useState<LNURLResponse | null>(null);
+  const [callbackResponse, setCallbackResponse] = useState<any>(null);
+  const [sparkAddress, setSparkAddress] = useState('');
+  const [amount, setAmount] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const handleSubmit = async (address: string, amount: string) => {
+    setSparkAddress(address);
+    setAmount(amount);
+    setLoading(true);
     setLnurlResponse(null);
     setCallbackResponse(null);
-    setLoading(true);
-    setCallbackLoading(true);
-    setShowResponses(true);
 
     try {
-      // First request: Get LNURL response
-      const lnurlUrl = `/.well-known/lnurlp/${sparkAddress}`;
-      const lnurlRes = await fetch(lnurlUrl);
-      if (!lnurlRes.ok) {
-        throw new Error(`LNURL request failed: ${lnurlRes.statusText}`);
-      }
-      const lnurlData = await lnurlRes.json();
-      setLnurlResponse(lnurlData);
-      setLoading(false);
+      const response = await fetch(`/.well-known/lnurlp/${address}`);
+      const data = await response.json();
+      setLnurlResponse(data);
 
-      // Second request: Use callback URL
-      // The callback URL is already a full URL from the server
-      const callbackUrl = new URL(lnurlData.callback);
-      callbackUrl.searchParams.set('amount', (Number(amount) * 1000).toString());
-      
-      // Make the request to the callback URL
-      const callbackRes = await fetch(callbackUrl.toString(), {
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      
-      if (!callbackRes.ok) {
-        throw new Error(`Callback request failed: ${callbackRes.statusText}`);
+      if (data.callback) {
+        setCallbackLoading(true);
+        const callbackResponse = await fetch(
+          `${data.callback}?amount=${(Number(amount) * 1000).toString()}`,
+          {
+            headers: {
+              Accept: 'application/json',
+            },
+          }
+        );
+        const callbackData = await callbackResponse.json();
+        setCallbackResponse(callbackData);
       }
-      const callbackData = await callbackRes.json();
-      setCallbackResponse(callbackData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error details:', err);
+    } catch (error) {
+      console.error('Error:', error);
     } finally {
+      setLoading(false);
       setCallbackLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="max-w-4xl mx-auto">
           <Header />
-          <h1 className="text-4xl font-bold mb-8 text-center">
-            sparkto.me
-          </h1>
-          <p className="text-xl mb-6 text-center text-gray-300">
-            Send to any Spark address as a Lightning address!<br/>
-          </p>
-
-          <div className="space-y-8">
-            <HowItWorks />
-            
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">Try it!</h2>
-              <InvoiceForm
-                sparkAddress={sparkAddress}
-                amount={amount}
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-3 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+              sparkto.me
+            </h1>
+            <p className="text-lg sm:text-xl text-gray-400 px-4">
+              Receive Lightning payments to your Spark address
+            </p>
+          </div>
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8">
+            <div className="space-y-6 sm:space-y-8">
+              <HowItWorks />
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/50">
+                <InvoiceForm onSubmit={handleSubmit} />
+              </div>
+            </div>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/50">
+              <CommandLine
                 loading={loading}
                 callbackLoading={callbackLoading}
-                onSparkAddressChange={setSparkAddress}
-                onAmountChange={setAmount}
-                onSubmit={handleSubmit}
+                lnurlResponse={lnurlResponse}
+                callbackResponse={callbackResponse}
+                sparkAddress={sparkAddress}
+                amount={amount}
               />
-
-              {error && (
-                <div className="mb-8 p-4 bg-red-900/50 border border-red-700 rounded-lg">
-                  <p className="text-red-200">{error}</p>
-                </div>
-              )}
-
-              {showResponses && (
-                <CommandLine
-                  loading={loading}
-                  callbackLoading={callbackLoading}
-                  lnurlResponse={lnurlResponse}
-                  callbackResponse={callbackResponse}
-                  sparkAddress={sparkAddress}
-                  amount={amount}
-                />
-              )}
-            </section>
+            </div>
           </div>
         </div>
       </div>
