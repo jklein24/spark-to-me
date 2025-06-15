@@ -1,2 +1,0 @@
-# @lightsparkdev/spark-uma-vasp
-

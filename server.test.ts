@@ -14,14 +14,14 @@ import UmaConfig from "./src/UmaConfig.js";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      LIGHTSPARK_UMA_RECEIVER_USER: string;
-      LIGHTSPARK_UMA_ENCRYPTION_CERT_CHAIN: string;
-      LIGHTSPARK_UMA_ENCRYPTION_PUBKEY: string;
-      LIGHTSPARK_UMA_ENCRYPTION_PRIVKEY: string;
-      LIGHTSPARK_UMA_SIGNING_CERT_CHAIN: string;
-      LIGHTSPARK_UMA_SIGNING_PUBKEY: string;
-      LIGHTSPARK_UMA_SIGNING_PRIVKEY: string;
-      LIGHTSPARK_EXAMPLE_BASE_URL: string;
+      UMA_RECEIVER_USER: string;
+      UMA_ENCRYPTION_CERT_CHAIN: string;
+      UMA_ENCRYPTION_PUBKEY: string;
+      UMA_ENCRYPTION_PRIVKEY: string;
+      UMA_SIGNING_CERT_CHAIN: string;
+      UMA_SIGNING_PUBKEY: string;
+      UMA_SIGNING_PRIVKEY: string;
+      EXAMPLE_BASE_URL: string;
     }
   }
 }
@@ -65,9 +65,9 @@ describe("Test server routes", async () => {
     expect(response.status).toBe(200);
     expect(response.text).toEqual(
       getPubKeyResponse({
-        signingCertChainPem: process.env.LIGHTSPARK_UMA_SIGNING_CERT_CHAIN,
+        signingCertChainPem: process.env.UMA_SIGNING_CERT_CHAIN,
         encryptionCertChainPem:
-          process.env.LIGHTSPARK_UMA_ENCRYPTION_CERT_CHAIN,
+          process.env.UMA_ENCRYPTION_CERT_CHAIN,
       }).toJsonString(),
     );
   });

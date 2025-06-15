@@ -11,13 +11,13 @@ export default class UmaConfig {
 
   static fromEnvironment(): UmaConfig {
     return new UmaConfig(
-      requireEnv("LIGHTSPARK_UMA_ENCRYPTION_CERT_CHAIN").replaceAll(/\\n/g, "\n"),
-      requireEnv("LIGHTSPARK_UMA_ENCRYPTION_PUBKEY"),
-      requireEnv("LIGHTSPARK_UMA_ENCRYPTION_PRIVKEY"),
-      requireEnv("LIGHTSPARK_UMA_SIGNING_CERT_CHAIN").replaceAll(/\\n/g, "\n"),
-      requireEnv("LIGHTSPARK_UMA_SIGNING_PUBKEY"),
-      requireEnv("LIGHTSPARK_UMA_SIGNING_PRIVKEY"),
-      process.env.LIGHTSPARK_UMA_VASP_DOMAIN,
+      requireEnv("UMA_ENCRYPTION_CERT_CHAIN").replaceAll(/\\n/g, "\n"),
+      requireEnv("UMA_ENCRYPTION_PUBKEY"),
+      requireEnv("UMA_ENCRYPTION_PRIVKEY"),
+      requireEnv("UMA_SIGNING_CERT_CHAIN").replaceAll(/\\n/g, "\n"),
+      requireEnv("UMA_SIGNING_PUBKEY"),
+      requireEnv("UMA_SIGNING_PRIVKEY"),
+      process.env.UMA_VASP_DOMAIN,
     );
   }
 

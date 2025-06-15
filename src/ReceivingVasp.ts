@@ -17,6 +17,13 @@ import {
   isDomainLocalhost,
   sendResponse,
 } from "./networking/expressAdapters.js";
+import cors from "cors";
+
+const publicCors = cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept'],
+});
 
 export default class ReceivingVasp {
   constructor(
@@ -29,6 +36,7 @@ export default class ReceivingVasp {
   registerRoutes(app: Express): void {
     app.get(
       "/.well-known/lnurlp/:username",
+      publicCors,
       asyncHandler(async (req, resp) => {
         const response = await this.handleLnurlpRequest(
           req.params.username,
@@ -40,6 +48,7 @@ export default class ReceivingVasp {
 
     app.get(
       "/api/lnurl/payreq/:uuid",
+      publicCors,
       asyncHandler(async (req, resp) => {
         const response = await this.handleLnurlPayreq(
           req.params.uuid,
@@ -51,6 +60,7 @@ export default class ReceivingVasp {
 
     app.post(
       "/api/uma/payreq/:uuid",
+      publicCors,
       asyncHandler(async (req, resp) => {
         const response = await this.handleUmaPayreq(
           req.params.uuid,

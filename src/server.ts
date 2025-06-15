@@ -8,6 +8,10 @@ import {
 } from "@uma-sdk/core";
 import bodyParser from "body-parser";
 import express from "express";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import ReceivingVasp from "./ReceivingVasp.js";
 import SendingVasp from "./SendingVasp.js";
 import SendingVaspRequestCache from "./SendingVaspRequestCache.js";
@@ -15,6 +19,16 @@ import UmaConfig from "./UmaConfig.js";
 import UserService from "./UserService.js";
 import { errorMessage } from "./errors.js";
 import { fullUrlForRequest } from "./networking/expressAdapters.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// CORS configuration for public endpoints
+const publicCors = cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept'],
+});
 
 export const createUmaServer = (
   config: UmaConfig,
@@ -33,6 +47,9 @@ export const createUmaServer = (
   const app = express();
 
   app.use(bodyParser.text({ type: "*/*" })); // Middleware to parse raw body
+
+  // Serve static files from the React app
+  app.use(express.static(path.join(__dirname, "../dist/client")));
 
   const sendingVasp = new SendingVasp(
     config,
@@ -59,7 +76,7 @@ export const createUmaServer = (
     );
   });
 
-  app.get("/.well-known/uma-configuration", (req, res) => {
+  app.get("/.well-known/uma-configuration", publicCors, (req, res) => {
     const reqUrl = fullUrlForRequest(req);
     const reqBaseUrl = reqUrl.origin;
     // TODO: Add UMA Auth implementation.
@@ -67,6 +84,12 @@ export const createUmaServer = (
       uma_major_versions: [0, 1],
       uma_request_endpoint: reqBaseUrl + "/api/uma/request_invoice_payment",
     });
+  });
+
+  // The "catchall" handler: for any request that doesn't
+  // match one above, send back React's index.html file.
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../dist/client/index.html"));
   });
 
   // Default 404 handler.

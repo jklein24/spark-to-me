@@ -6,31 +6,31 @@ An example UMA VASP server implementation using Typescript.
 
 Configure environment variables needed for UMA messages (keys, etc.). Information on how to set them can be found in `src/UmaConfig.ts`.
 
-Create a secp256k1 private key to use as your encryption private key (`LIGHTSPARK_UMA_ENCRYPTION_PRIVKEY`) and use this private key to wrap the corresponding encryption public key in an X.509 Certificate (`LIGHTSPARK_UMA_ENCRYPTION_CERT_CHAIN`). Similarly for signing, create a secp256k1 private key to use as your signing private key (`LIGHTSPARK_UMA_SIGNING_PRIVKEY`) and use this private key to wrap the corresponding signing public key in an X.509 Certificate (`LIGHTSPARK_UMA_SIGNING_CERT_CHAIN`). You may choose to use the same keypair for encryption and signing. For information on generating these, see [our docs](https://docs.uma.me/uma-standard/keys-authentication-encryption).
+Create a secp256k1 private key to use as your encryption private key (`UMA_ENCRYPTION_PRIVKEY`) and use this private key to wrap the corresponding encryption public key in an X.509 Certificate (`UMA_ENCRYPTION_CERT_CHAIN`). Similarly for signing, create a secp256k1 private key to use as your signing private key (`UMA_SIGNING_PRIVKEY`) and use this private key to wrap the corresponding signing public key in an X.509 Certificate (`UMA_SIGNING_CERT_CHAIN`). You may choose to use the same keypair for encryption and signing. For information on generating these, see [our docs](https://docs.uma.me/uma-standard/keys-authentication-encryption).
 
 To run locally on your machine, from the `uma-vasp` directory, run:
 
 ```bash
-yarn start
+yarn dev
 ```
 
 This will run the server on port 3104. You can change the port by setting the `PORT` environment variable:
 
 ```bash
-PORT=8080 yarn start
+PORT=8080 yarn dev
 ```
 
 To set all of the config variables at once, you can do something like:
 
 ```bash
 PORT=8080 \
-LIGHTSPARK_UMA_ENCRYPTION_CERT_CHAIN=<pem-encoded x509 certificate chain containing encryption pubkey> \
-LIGHTSPARK_UMA_ENCRYPTION_PUBKEY=<encryption public key hex> \
-LIGHTSPARK_UMA_ENCRYPTION_PRIVKEY=<encryption private key hex> \
-LIGHTSPARK_UMA_SIGNING_CERT_CHAIN=<pem-encoded x509 certificate chain containing signing pubkey> \
-LIGHTSPARK_UMA_SIGNING_PUBKEY=<signing public key hex> \
-LIGHTSPARK_UMA_SIGNING_PRIVKEY=<signing private key hex> \
-yarn start
+UMA_ENCRYPTION_CERT_CHAIN=<pem-encoded x509 certificate chain containing encryption pubkey> \
+UMA_ENCRYPTION_PUBKEY=<encryption public key hex> \
+UMA_ENCRYPTION_PRIVKEY=<encryption private key hex> \
+UMA_SIGNING_CERT_CHAIN=<pem-encoded x509 certificate chain containing signing pubkey> \
+UMA_SIGNING_PUBKEY=<signing public key hex> \
+UMA_SIGNING_PRIVKEY=<signing private key hex> \
+yarn dev
 ```
 
 ## Running with Docker
@@ -44,15 +44,15 @@ docker build -t spark-to-me .
 Next, we need to set up the config variables. You can do this by creating a file called `local.env` in the root directory. This file should contain the following:
 
 ```bash
-LIGHTSPARK_UMA_ENCRYPTION_CERT_CHAIN=<pem-encoded x509 certificate chain containing encryption pubkey>
-LIGHTSPARK_UMA_ENCRYPTION_PUBKEY=<hex-encoded encryption pubkey>
-LIGHTSPARK_UMA_ENCRYPTION_PRIVKEY=<hex-encoded encryption privkey>
-LIGHTSPARK_UMA_SIGNING_CERT_CHAIN=<pem-encoded x509 certificate chain containing signing pubkey>
-LIGHTSPARK_UMA_SIGNING_PUBKEY=<hex-encoded signing pubkey>
-LIGHTSPARK_UMA_SIGNING_PRIVKEY=<hex-encoded signing privkey>
+UMA_ENCRYPTION_CERT_CHAIN=<pem-encoded x509 certificate chain containing encryption pubkey>
+UMA_ENCRYPTION_PUBKEY=<hex-encoded encryption pubkey>
+UMA_ENCRYPTION_PRIVKEY=<hex-encoded encryption privkey>
+UMA_SIGNING_CERT_CHAIN=<pem-encoded x509 certificate chain containing signing pubkey>
+UMA_SIGNING_PUBKEY=<hex-encoded signing pubkey>
+UMA_SIGNING_PRIVKEY=<hex-encoded signing privkey>
 
 # Optional: A custom VASP domain in case you're hosting this at a fixed hostname.
-LIGHTSPARK_UMA_VASP_DOMAIN=<your custom VASP domain. ex: vasp1.example.com>
+UMA_VASP_DOMAIN=<your custom VASP domain. ex: vasp1.example.com>
 ```
 
 Then, run the image:

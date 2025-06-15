@@ -1,23 +1,52 @@
-FROM node:lts-alpine
+# Build stage for the backend
+FROM node:20-alpine AS backend-builder
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+COPY . .
+RUN yarn build && \
+    yarn cache clean && \
+    rm -rf node_modules
 
-# Set the working directory to /app
+# Build stage for the frontend
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+COPY . .
+RUN yarn build && \
+    yarn cache clean && \
+    rm -rf node_modules
+
+# Production stage
+FROM node:20-alpine
 WORKDIR /app
 
-# TODO(jeremy): Figure out how to only copy the package.json and package-lock.json files to the container.
-# before running yarn. I can't seem to get the workspace to play nicely with this.
+# Copy only the necessary files for production
+COPY --from=backend-builder /app/dist ./dist
 COPY package.json yarn.lock ./
 
-RUN corepack enable
-RUN corepack prepare --activate
+# Install only production dependencies and clean up
+RUN yarn install --frozen-lockfile --production --network-timeout 100000 && \
+    yarn cache clean && \
+    rm -rf /root/.cache && \
+    rm -rf /root/.npm
 
-# Install the dependencies
-RUN yarn
+# Copy frontend build
+COPY --from=frontend-builder /app/dist/client ./dist/client
 
-COPY . .
+# Set environment variables
+ENV NODE_ENV=production \
+    PORT=8080
 
-RUN yarn build && ls -la
+# Create a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup && \
+    chown -R appuser:appgroup /app
 
-# Expose port 8080
+# Switch to non-root user
+USER appuser
+
+# Expose the port
 EXPOSE 8080
 
 # Start the Express server
