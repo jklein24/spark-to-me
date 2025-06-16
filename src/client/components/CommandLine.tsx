@@ -30,7 +30,7 @@ export function CommandLine({
           </div>
         )}
         <pre className="p-3 sm:p-4 bg-gray-800 rounded-lg overflow-x-auto h-[400px] sm:h-[600px] font-mono text-xs sm:text-sm whitespace-pre-wrap break-all">
-          <div className="text-gray-400">$ curl -X GET "{protocol}://{host}/.well-known/lnurlp/{sparkAddress || 'your_spark_address'}"</div>
+          <div className="text-gray-400">$ curl -X GET "{protocol}//{host}/.well-known/lnurlp/{sparkAddress || 'your_spark_address'}"</div>
           {loading ? (
             <div className="flex items-center justify-center h-32">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
