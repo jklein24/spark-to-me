@@ -5,18 +5,18 @@ import { createHash } from "crypto";
 import { Express } from "express";
 import asyncHandler from "express-async-handler";
 import { PAYER_DATA_OPTIONS } from "./PayerDataOptions.js";
-import UmaConfig from "./UmaConfig.js";
-import { User } from "./User.js";
-import UserService from "./UserService.js";
-import { SATS_CURRENCY } from "./currencies.js";
-import SparkAddressUserService from "./demo/SparkAddressService.js";
-import { HttpResponse } from "./networking/HttpResponse.js";
+import UmaConfig from "../UmaConfig.js";
+import { User } from "../users/User.js";
+import UserService from "../users/UserService.js";
+import { SATS_CURRENCY } from "../currencies.js";
+import SparkAddressUserService from "../users/SparkAddressService.js";
+import { HttpResponse } from "../networking/HttpResponse.js";
 import {
   fullUrlForRequest,
   hostNameWithPort,
   isDomainLocalhost,
   sendResponse,
-} from "./networking/expressAdapters.js";
+} from "../networking/expressAdapters.js";
 import cors from "cors";
 
 const publicCors = cors({

@@ -5,16 +5,16 @@ import asyncHandler from "express-async-handler";
 import SendingVaspRequestCache, {
   SendingVaspInitialRequestData,
 } from "./SendingVaspRequestCache.js";
-import UmaConfig from "./UmaConfig.js";
-import { User } from "./User.js";
-import UserService from "./UserService.js";
-import { SATS_CURRENCY } from "./currencies.js";
-import { HttpResponse } from "./networking/HttpResponse.js";
+import UmaConfig from "../UmaConfig.js";
+import { User } from "../users/User.js";
+import UserService from "../users/UserService.js";
+import { SATS_CURRENCY } from "../currencies.js";
+import { HttpResponse } from "../networking/HttpResponse.js";
 import {
   fullUrlForRequest,
   hostNameWithPort,
   sendResponse,
-} from "./networking/expressAdapters.js";
+} from "../networking/expressAdapters.js";
 
 export default class SendingVasp {
   constructor(

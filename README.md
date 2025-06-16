@@ -8,22 +8,15 @@ Configure environment variables needed for UMA messages (keys, etc.). Informatio
 
 Create a secp256k1 private key to use as your encryption private key (`UMA_ENCRYPTION_PRIVKEY`) and use this private key to wrap the corresponding encryption public key in an X.509 Certificate (`UMA_ENCRYPTION_CERT_CHAIN`). Similarly for signing, create a secp256k1 private key to use as your signing private key (`UMA_SIGNING_PRIVKEY`) and use this private key to wrap the corresponding signing public key in an X.509 Certificate (`UMA_SIGNING_CERT_CHAIN`). You may choose to use the same keypair for encryption and signing. For information on generating these, see [our docs](https://docs.uma.me/uma-standard/keys-authentication-encryption).
 
-To run locally on your machine, from the `uma-vasp` directory, run:
+To run locally on your machine, from the `root` directory, run:
 
 ```bash
 yarn dev
 ```
 
-This will run the server on port 3104. You can change the port by setting the `PORT` environment variable:
+This will run the server on port 8080 and the client on port 3000. To set all of the config variables at once, you can do something like:
 
 ```bash
-PORT=8080 yarn dev
-```
-
-To set all of the config variables at once, you can do something like:
-
-```bash
-PORT=8080 \
 UMA_ENCRYPTION_CERT_CHAIN=<pem-encoded x509 certificate chain containing encryption pubkey> \
 UMA_ENCRYPTION_PUBKEY=<encryption public key hex> \
 UMA_ENCRYPTION_PRIVKEY=<encryption private key hex> \
@@ -116,7 +109,7 @@ CALLBACK_URL=$(curl -s -X GET http://localhost:8080/.well-known/lnurlp/sprt1pgss
 
 This will copy the invoice to your clipboard and print it to the terminal. You can then paste it into your spark or lightning wallet to pay it.
 
-## Using the get-invoice.sh Script
+### Using the get-invoice.sh Script
 
 For convenience, you can use the included `get-invoice.sh` script to fetch invoices. The script takes a spark address and an amount in millisats as arguments, with an optional host parameter:
 
@@ -135,3 +128,11 @@ For example:
 ```
 
 This will fetch an invoice for 1000 millisats and both print it to the terminal and copy it to your clipboard.
+
+## Navigating the code
+
+The main interesting bit of code for this application is in [ReceivingVasp.ts](https://github.com/jklein24/spark-to-me/blob/main/src/receiving/ReceivingVasp.ts). This is the class that handles incoming lnurl-pay or UMA requests and creates lightning invoices for the right spark wallet.
+
+This code is a modified version of the demo [UMA VASP](https://github.com/lightsparkdev/js-sdk/tree/main/apps/examples/uma-vasp) codebase. Much of the complexity has been removed, but there are still a lot of remnants of UMA functionality to allow for expansion of this server in the future. For example, to allow for multi-currency support, and an UMA sender implementation in [SendingVasp.ts](https://github.com/jklein24/spark-to-me/blob/main/src/sending/SendingVasp.ts).
+
+There is also a simple landing page and client that allows you to fetch invoices for any spark address. This is in [src/client](https://github.com/jklein24/spark-to-me/tree/main/src/client) and can be seen at [sparkto.me](https://sparkto.me).

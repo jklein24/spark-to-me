@@ -12,11 +12,11 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import ReceivingVasp from "./ReceivingVasp.js";
-import SendingVasp from "./SendingVasp.js";
-import SendingVaspRequestCache from "./SendingVaspRequestCache.js";
+import ReceivingVasp from "./receiving/ReceivingVasp.js";
+import SendingVasp from "./sending/SendingVasp.js";
+import SendingVaspRequestCache from "./sending/SendingVaspRequestCache.js";
 import UmaConfig from "./UmaConfig.js";
-import UserService from "./UserService.js";
+import UserService from "./users/UserService.js";
 import { errorMessage } from "./errors.js";
 import { fullUrlForRequest } from "./networking/expressAdapters.js";
 

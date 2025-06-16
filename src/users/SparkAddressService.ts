@@ -1,7 +1,7 @@
 import { NetworkType } from "@buildonspark/spark-sdk";
 import { decodeSparkAddress } from "@buildonspark/spark-sdk/address";
-import { User } from "../User.js";
-import UserService from "../UserService.js";
+import { User } from "./User.js";
+import UserService from "./UserService.js";
 
 export default class SparkAddressUserService implements UserService {
   async getCallingUserFromRequest(
@@ -9,6 +9,7 @@ export default class SparkAddressUserService implements UserService {
     headers: { [key: string]: string | string[] | undefined },
   ): Promise<User | undefined> {
     // Sending not supported for now, so no need to have auth.
+    // TODO(jklein24): Add a challenge-response auth flow based on spark identity pubkey.
     return undefined;
   }
 

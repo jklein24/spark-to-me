@@ -1,7 +1,7 @@
 import { InMemoryNonceValidator, InMemoryPublicKeyCache } from "@uma-sdk/core";
 import UmaConfig from "./UmaConfig.js";
-import InMemorySendingVaspRequestCache from "./demo/InMemorySendingVaspRequestCache.js";
-import SparkAddressUserService from "./demo/SparkAddressService.js";
+import InMemorySendingVaspRequestCache from "./sending/InMemorySendingVaspRequestCache.js";
+import SparkAddressUserService from "./users/SparkAddressService.js";
 import { createUmaServer } from "./server.js";
 
 // In a real implementation, you'd replace the demo implementations of all of the services with your

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import SendingVaspRequestCache, {
   SendingVaspInitialRequestData,
   SendingVaspPayReqData,
-} from "../SendingVaspRequestCache.js";
+} from "./SendingVaspRequestCache.js";
 
 /**
  * A simple in-memory cache for data that needs to be remembered between calls to VASP1. In practice, this would be
